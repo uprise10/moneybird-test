@@ -1,0 +1,22 @@
+{
+	"name": "uprise/moneybird",
+	"description": "Composer.json file for Moneybird test",
+	"license": "GPL-2.0+",
+	"homepage": "http://localhost/moneybird",
+	"repositories": {
+	},
+	"extra": {
+	},
+	"autoload": {
+		"psr-4": {
+			"Uprise\\OAuth2\\Client\\Moneybird\\": "src/"
+		}
+	},
+	"require": {
+		"composer/installers": "dev-master",
+		"league/oauth2-client": "*",
+		"vlucas/phpdotenv": "*",
+		"guzzlehttp/guzzle": "*",
+		"fkooman/guzzle-bearer-auth-plugin": "*"
+	}
+}
