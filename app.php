@@ -43,7 +43,7 @@ echo '</pre>';
 
 try {
 	$client = new Client();
-	$bearerAuth = new BearerAuth("12345");
+	$bearerAuth = new BearerAuth( $token );
 	$client->addSubscriber($bearerAuth);
 
 	$request = $client->get( $url );
