@@ -40,23 +40,29 @@ $request = $client->get( $url );
 $request->addHeader(\'Content-Type\', \'application/json\' );
 $request->addHeader(\'Authorization\', \'Bearer \' . $token );';
 echo '</pre>';
+
 try {
 	$client = new Client();
+	$bearerAuth = new BearerAuth("12345");
+	$client->addSubscriber($bearerAuth);
+
 	$request = $client->get( $url );
 	$request->addHeader('Content-Type', 'application/json' );
-	$request->addHeader('Authorization', 'Bearer ' . $token );
-
 	$response = $request->send();
-	echo '<pre>';
-	print_r( $response );
-	echo '</pre>';
 
+	echo '<pre>';
+	var_dump( $response );
+	echo '</pre>';
 }
 catch ( BearerErrorResponseException $e ) {
-	echo $e->getMessage() . PHP_EOL;
+	echo '<pre>';
+	var_dump( $e->getMessage() );
+	echo '</pre>';
 }
 catch ( BadResponseException $e ) {
-	echo $e->getMessage() . PHP_EOL;
+	echo '<pre>';
+	var_dump( $e->getMessage() );
+	echo '</pre>';
 }
 
 
