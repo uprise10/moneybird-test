@@ -20,7 +20,7 @@ $token = $_SESSION['moneybird_token'];
 
 
 $base_url = 'https://moneybird.com/api/v2/' . getenv( 'MONEYBIRD_ADMINISTRATION_ID' ) . '/';
-$url = $base_url . 'sales_invoices.json';
+$url = $base_url . 'sales_invoices/synchronization.json';
 
 $exec = 'curl -XGET -H "Content-Type: application/json" -H "Authorization: Bearer ' . $token . '"  -d \'{"filter":"period:this_month"}\' ' . $url;
 echo '<h3>Via Terminal</h3>';
@@ -45,7 +45,7 @@ try {
 	$response = $request->send();
 
 	echo '<pre>';
-	var_dump( $response );
+	var_dump( $response->getStatusCode(), $response->getBody() );
 	echo '</pre>';
 }
 catch ( BearerErrorResponseException $e ) {
