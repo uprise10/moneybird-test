@@ -20,9 +20,9 @@ $token = $_SESSION['moneybird_token'];
 
 
 $base_url = 'https://moneybird.com/api/v2/' . getenv( 'MONEYBIRD_ADMINISTRATION_ID' ) . '/';
-$url = $base_url . 'contacts.json';
+$url = $base_url . 'sales_invoices.json';
 
-$exec = 'curl -XGET -H "Content-Type: application/json" -H "Authorization: Bearer ' . $token . '" ' . $url;
+$exec = 'curl -XGET -H "Content-Type: application/json" -H "Authorization: Bearer ' . $token . '"  -d \'{"filter":"period:this_month"}\' ' . $url;
 echo '<h3>Via Terminal</h3>';
 echo '<strong>Request</strong><br>';
 echo '<code>' . $exec . '</code><br>';
@@ -34,12 +34,6 @@ echo '</pre>';
 
 echo '<h3>Via Guzzle</h3>';
 echo 'Request URL: ' . $url . '<br>';
-echo '<pre>';
-echo '$client = new Client();
-$request = $client->get( $url );
-$request->addHeader(\'Content-Type\', \'application/json\' );
-$request->addHeader(\'Authorization\', \'Bearer \' . $token );';
-echo '</pre>';
 
 try {
 	$client = new Client();
@@ -64,35 +58,3 @@ catch ( BadResponseException $e ) {
 	var_dump( $e->getMessage() );
 	echo '</pre>';
 }
-
-
-// set URL and other appropriate options
-$ch = curl_init();
-$headers = array(
-	'Content-Type: application/json',
-	'Authorization: Bearer ' . $token
-);
-
-echo '<h3>Via PHP CURL</h3>';
-echo '<strong>Request:</strong><br>';
-echo 'URL: ' . $url . '<br>';
-echo '<pre>';
-print_r( $headers );
-echo '</pre>';
-
-curl_setopt($ch, CURLOPT_URL, $url );
-curl_setopt($ch, CURLOPT_HEADER, $headers);
-
-$response["response"]      = curl_exec($ch);
-$response["error"]         = curl_errno($ch);
-$response["error_message"] = curl_error($ch) ;
-$response["info"]          = curl_getinfo($ch);
-
-echo '<strong>Output:</strong><br>';
-echo '<pre>';
-var_dump( $response );
-echo '</pre>';
-
-
-// close cURL resource, and free up system resources
-curl_close($ch);
