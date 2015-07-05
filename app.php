@@ -22,33 +22,33 @@ $token = $_SESSION['moneybird_token'];
 $base_url = 'https://moneybird.com/api/v2/' . getenv( 'MONEYBIRD_ADMINISTRATION_ID' ) . '/';
 $url = $base_url . 'sales_invoices/synchronization.json';
 
-$exec = 'curl -XGET -H "Content-Type: application/json" -H "Authorization: Bearer ' . $token . '"  -d \'{"filter":"period:this_month"}\' ' . $url;
-echo '<h3>Via Terminal</h3>';
-echo '<strong>Request</strong><br>';
-echo '<code>' . $exec . '</code><br>';
-
-exec( $exec, $output );
-echo '<strong>Output:</strong><br><pre>';
-var_dump( $output );
-echo '</pre>';
-
-echo '<h3>Via Guzzle</h3>';
-echo 'Request URL: ' . $url . '<br>';
+echo '<strong>Request URL:</strong> <code>' . $url . '</code>';
 
 try {
 	$client = new Client();
 	$bearerAuth = new BearerAuth( $token );
 	$client->addSubscriber($bearerAuth);
 
+	$options = array(
+		'filter', 'period:this_month'
+	);
+
 	$request = $client->get( $url );
 	$request->addHeader('Content-Type', 'application/json' );
+
+	// Add filter to the query
+//	$query = $request->getQuery();
+//	$query->add( 'filter', 'period:last_month' );
+//	$query->useUrlEncoding( false );
+
 	$response = $request->send();
 
-	echo '<br><strong>Result:</strong><br>';
-	echo 'Status code: ' . $response->getStatusCode() . '<br>';
+	$result = $response->json();
+	echo '# results: ' . count( $result ) . '<br>';
 	echo '<pre>';
-	print_r( $response->getBody() );
+	print_r( $result );
 	echo '</pre>';
+
 }
 catch ( BearerErrorResponseException $e ) {
 	echo '<pre>';
