@@ -44,8 +44,10 @@ try {
 	$request->addHeader('Content-Type', 'application/json' );
 	$response = $request->send();
 
+	echo '<br><strong>Result:</strong><br>';
+	echo 'Status code: ' . $response->getStatusCode() . '<br>';
 	echo '<pre>';
-	var_dump( $response->getStatusCode(), $response->getBody() );
+	print_r( $response->getBody() );
 	echo '</pre>';
 }
 catch ( BearerErrorResponseException $e ) {
