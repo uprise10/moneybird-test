@@ -5,6 +5,9 @@ session_start();
 error_reporting(-1);
 require 'vendor/autoload.php';
 
+$dotenv = new Dotenv\Dotenv(__DIR__);
+$dotenv->load();
+
 // Redirect to app when token is already retrieved
 if( isset( $_SESSION['moneybird_token'] ) ) {
 	header( 'Location: app.php' );

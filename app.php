@@ -10,53 +10,65 @@ use fkooman\Guzzle\Plugin\BearerAuth\BearerAuth;
 use fkooman\Guzzle\Plugin\BearerAuth\Exception\BearerErrorResponseException;
 use Guzzle\Http\Exception\BadResponseException;
 
-
+// Load .env
 $dotenv = new Dotenv\Dotenv(__DIR__);
 $dotenv->load();
 
-echo '<h1>Moneybird API test</h1>';
-
+$base_url = 'https://moneybird.com/api/v2/' . getenv( 'MONEYBIRD_ADMINISTRATION_ID' ) . '/';
 $token = $_SESSION['moneybird_token'];
 
 
-$base_url = 'https://moneybird.com/api/v2/' . getenv( 'MONEYBIRD_ADMINISTRATION_ID' ) . '/';
-$url = $base_url . 'sales_invoices/synchronization.json';
+echo '<h1>Moneybird API test</h1>';
 
-echo '<strong>Request URL:</strong> <code>' . $url . '</code>';
+// Get all invoices
+$handler = new Uprise\OAuth2\Client\Moneybird\Provider\Handler();
+$handler->set_base_url( $base_url );
+$handler->set_token( $token );
 
-try {
-	$client = new Client();
-	$bearerAuth = new BearerAuth( $token );
-	$client->addSubscriber($bearerAuth);
+$ledger_accounts = $handler->get( 'ledger_accounts.json' );
+$ledger_id_omzet = '126847062986720562';
 
-	$options = array(
-		'filter', 'period:this_month'
-	);
+$invoices = $handler->get( 'sales_invoices/synchronization.json' );
 
-	$request = $client->get( $url );
-	$request->addHeader('Content-Type', 'application/json' );
-
-	// Add filter to the query
-	$query = $request->getQuery();
-	$query->add( 'filter', 'period:last_month' );
-	$query->useUrlEncoding( false );
-
-	$response = $request->send();
-
-	$result = $response->json();
-	echo '# results: ' . count( $result ) . '<br>';
-	echo '<pre>';
-	print_r( $result );
-	echo '</pre>';
-
+if( ! is_array( $invoices ) ) {
+	die( 'Error getting all invoices.' );
 }
-catch ( BearerErrorResponseException $e ) {
+echo '<pre>';
+var_dump( $token );
+echo '</pre>';
+
+foreach ( $invoices as $i => $invoice ) {
+	$invoice_url = 'sales_invoices/' . $invoice['id'] . '.json';
+	$invoice = $handler->get( $invoice_url );
+
+	if( false == $invoice ) {
+		continue;
+	}
+
+	if( $i > 0 ) {
+		break;
+	}
+
 	echo '<pre>';
-	var_dump( $e->getMessage() );
+	var_dump( $invoice );
 	echo '</pre>';
-}
-catch ( BadResponseException $e ) {
+
+ 	$args = [];
+
+	foreach ( $invoice['details'] as $key => $detail ) {
+		$args[ 'sales_invoice']['details_attributes'][ $key ]['id'] = $detail['id'];
+		$args[ 'sales_invoice']['details_attributes'][ $key ]['ledger_account_id'] = $ledger_id_omzet;
+	}
+
+echo '<pre>';
+print_r( $args );
+echo '</pre>';
+	echo '<br>' . json_encode( $args, JSON_FORCE_OBJECT ) . '<br>';
+
+	$output = $handler->patch( $invoice_url, $args );
 	echo '<pre>';
-	var_dump( $e->getMessage() );
+	print_r( $output );
 	echo '</pre>';
+
+
 }
