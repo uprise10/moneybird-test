@@ -27,6 +27,10 @@ $dotenv = new Dotenv\Dotenv(__DIR__);
 $dotenv->load();
 
 $base_url = 'https://moneybird.com/api/v2/' . getenv( 'MONEYBIRD_ADMINISTRATION_ID' ) . '/';
+echo '<pre>';
+var_dump( $_SESSION['moneybird_token'] );
+echo '</pre>';
+
 $token = $_SESSION['moneybird_token'];
 
 

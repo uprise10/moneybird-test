@@ -35,8 +35,7 @@ else {
 	]);
 
 	// Use this to interact with an API on the users behalf
-	$token = $token->accessToken;
-	$_SESSION['moneybird_token'] = $token;
+	$_SESSION['moneybird_token'] = $token->getToken();
 
 	header('Location: app.php');
 }
