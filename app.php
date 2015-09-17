@@ -45,6 +45,13 @@ if( ! is_array( $invoices ) ) {
 	die( 'Error getting all invoices.' );
 }
 
+echo '<pre>';
+var_dump( $invoices );
+echo '</pre>';
+
+exit();
+
+
 $handled_invoices = isset( $_SESSION['handled'] ) ? $_SESSION['handled'] : '';
 if( empty( $handled_invoices ) ) {
 	$handled_invoices = [];

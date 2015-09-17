@@ -23,7 +23,7 @@ $provider = new Uprise\OAuth2\Client\Moneybird\Provider\Moneybird([
 
 if( ! isset( $_GET['code'] ) ) {
 	$authUrl = $provider->getAuthorizationUrl();
-	$_SESSION['oauth2state'] = $provider->state;
+	$_SESSION['oauth2state'] = $provider->getState();
 
 	header('Location: '.$authUrl);
 
